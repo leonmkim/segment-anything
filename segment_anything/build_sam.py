@@ -51,6 +51,29 @@ sam_model_registry = {
     "vit_b": build_sam_vit_b,
 }
 
+sam_model_urls = {
+    "vit_h": "https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth",
+    "vit_l": "https://dl.fbaipublicfiles.com/segment_anything/sam_vit_l_0b3195.pth",
+    "vit_b": "https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth",
+}
+
+def download_and_return_checkpoint_path(sam_model_name):
+    # get path of current file directory
+    import os
+    current_file_path_dir = os.path.dirname(os.path.realpath(__file__))
+    segment_anything_path = os.path.join(current_file_path_dir, os.pardir)
+    # segment_anything_path = os.path.dirname(segment_anything.__file__)
+    segment_anything_weights_dir_path = os.path.join(segment_anything_path, 'weights')
+    list_of_files_in_sam_weights = os.listdir(segment_anything_weights_dir_path)
+    sam_checkpoint_exists = any([f'sam_{sam_model_name}' in file for file in list_of_files_in_sam_weights])
+    url = sam_model_urls[sam_model_name]
+    # download the checkpoint to weights directory but retain the original name
+    sam_checkpoint_path = os.path.join(segment_anything_weights_dir_path, os.path.basename(url))
+    if not sam_checkpoint_exists:
+        # use wget to download the checkpoint
+        import wget
+        wget.download(url, sam_checkpoint_path)
+    return sam_checkpoint_path
 
 def _build_sam(
     encoder_embed_dim,
