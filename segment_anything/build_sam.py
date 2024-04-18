@@ -64,6 +64,7 @@ def download_and_return_checkpoint_path(sam_model_name):
     segment_anything_path = os.path.join(current_file_path_dir, os.pardir)
     # segment_anything_path = os.path.dirname(segment_anything.__file__)
     segment_anything_weights_dir_path = os.path.join(segment_anything_path, 'weights')
+    os.makedirs(segment_anything_weights_dir_path, exist_ok=True)
     list_of_files_in_sam_weights = os.listdir(segment_anything_weights_dir_path)
     sam_checkpoint_exists = any([f'sam_{sam_model_name}' in file for file in list_of_files_in_sam_weights])
     url = sam_model_urls[sam_model_name]
